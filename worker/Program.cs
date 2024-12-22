@@ -52,21 +52,28 @@ namespace Worker
                         redis = redisConn.GetDatabase();
                     }
 
-                    string json = redis.ListLeftPopAsync("votes").Result;
-                    if (json != null)
+                    string? json = redis.ListLeftPopAsync("votes").Result; // Nullable
+                    if (!string.IsNullOrEmpty(json))
                     {
                         var vote = JsonConvert.DeserializeAnonymousType(json, definition);
-                        Console.WriteLine($"Processing vote for '{vote.vote}' by '{vote.voter_id}'");
-
-                        // Reconnect DB if down
-                        if (!pgsql.State.Equals(System.Data.ConnectionState.Open))
+                        if (vote != null)
                         {
-                            Console.WriteLine("Reconnecting DB");
-                            pgsql = OpenDbConnection(pgConnectionString);
+                            Console.WriteLine($"Processing vote for '{vote.vote}' by '{vote.voter_id}'");
+
+                            // Reconnect DB if down
+                            if (pgsql.State != System.Data.ConnectionState.Open)
+                            {
+                                Console.WriteLine("Reconnecting DB");
+                                pgsql = OpenDbConnection(pgConnectionString);
+                            }
+                            else
+                            { // Normal +1 vote requested
+                                UpdateVote(pgsql, vote.voter_id, vote.vote);
+                            }
                         }
                         else
-                        { // Normal +1 vote requested
-                            UpdateVote(pgsql, vote.voter_id, vote.vote);
+                        {
+                            Console.WriteLine("Received invalid vote data.");
                         }
                     }
                     else
