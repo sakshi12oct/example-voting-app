@@ -45,19 +45,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
-    - name: Download Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: python-code-artifact
-        
-    - name: Verify Downloaded Artifact
-      run: |
-        # List the contents of the current directory to verify the artifact is downloaded
-        echo "Listing files after artifact download"
-        ls -al
-        echo "Listing contents of the downloaded artifact"
-        ls -al  # This will show the contents of the artifact files
-
     - name: Set up AWS CLI
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -78,6 +65,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_KEY }}
         script: |
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
