@@ -59,7 +59,7 @@ jobs:
         chmod 600 ~/.ssh/my-key.pem  # Set appropriate permissions for the private key
 
     - name: Deploy to EC2
-      uses: webfactory/ssh-action@v0.5.1
+      uses: ramsaybaker/ssh@v0.1.0
       with:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
