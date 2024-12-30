@@ -59,13 +59,17 @@ jobs:
         chmod 600 ~/.ssh/my-key.pem  # Set appropriate permissions for the private key
         ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         
-    - name: Run SSH commands
-      run: |
-       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
-       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}"
-       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}"
-       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}"
-       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker-compose up -d"
-      
-    
-
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key:  ${{ secrets.EC2_KEY }}
+        port: 22
+        debug: true # Enable debug for more detailed logs
+        script: |
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
+          sudo docker-compose up -d
