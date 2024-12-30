@@ -68,7 +68,7 @@ jobs:
         #port: 22
         #debug: true # Enable debug for more detailed logs
       run: |
-          ssh -i ~/.ssh/new-kp.pem ubuntu@ec2-35-172-228-213.compute-1.amazonaws.com
+          ssh -i ~/.ssh/new-kp.pem ubuntu@${{ secrets.EC2_HOST }}
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
