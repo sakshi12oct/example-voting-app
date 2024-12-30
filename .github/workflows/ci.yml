@@ -57,19 +57,15 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.EC2_KEY }}" > ~/.ssh/my-key.pem
         chmod 600 ~/.ssh/my-key.pem  # Set appropriate permissions for the private key
-
-    - name: Deploy to EC2
-      uses: ramsaybaker/ssh@v0.1.0
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key:  ${{ secrets.EC2_KEY }}
-        port: 22
-        debug: true # Enable debug for more detailed logs
-        script: |
-          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
-          sudo docker-compose up -d
+    - name: Run SSH commands
+      run: |
+       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
+       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}"
+       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}"
+       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}"
+       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker-compose up -d"
+      env:
+       EC2_KEY: ${{ secrets.EC2_KEY }}
+       EC2_HOST: ${{ secrets.EC2_HOST }}
+    
 
