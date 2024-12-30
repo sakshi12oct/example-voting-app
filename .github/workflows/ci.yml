@@ -60,14 +60,15 @@ jobs:
         # ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key:  ${{ secrets.EC2_KEY }}
-        port: 22
-        debug: true # Enable debug for more detailed logs
-        script: |
+      #uses: appleboy/ssh-action@v0.1.3
+      #with:
+        #host: ${{ secrets.EC2_HOST }}
+        #username: ubuntu
+        #key:  ${{ secrets.EC2_KEY }}
+        #port: 22
+        #debug: true # Enable debug for more detailed logs
+      run: |
+          ssh -i ~/.ssh/new-kp.pem ubuntu@ec2-35-172-228-213.compute-1.amazonaws.com
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
