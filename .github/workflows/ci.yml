@@ -64,6 +64,7 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
         key: ~/.ssh/my-key.pem
+        debug: true # Enable debug for more detailed logs
         script: |
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
