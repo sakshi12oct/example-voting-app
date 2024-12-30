@@ -61,11 +61,11 @@ jobs:
         
     - name: Run SSH commands
       run: |
-       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
-       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}"
-       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}"
-       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}"
-       ssh -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker-compose up -d"
+       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
+       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}"
+       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}"
+       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker pull ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}"
+       ssh -v -i ${{ secrets.EC2_KEY }} -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "sudo docker-compose up -d"
       
     
 
