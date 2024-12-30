@@ -21,7 +21,9 @@ jobs:
     # Step 3: Build Docker image
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }} .result
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }} .vote
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} .worker
 
     # Step 4: Push Docker image to DockerHub
     - name: Log in to DockerHub
@@ -33,3 +35,5 @@ jobs:
     - name: Push Docker image
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
