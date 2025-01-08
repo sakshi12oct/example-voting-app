@@ -55,7 +55,7 @@ jobs:
     - name: Set up SSH private key
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.EC2_KEY }}" > ~/.ssh/new-kp.pem
+        echo "${{ secrets.EC2_KEY }}" > ~/.ssh/new-my-kp.pem
         chmod 600 ~/.ssh/new-kp.pem  # Set appropriate permissions for the private key
         # ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         
@@ -68,7 +68,7 @@ jobs:
         #port: 22
         #debug: true # Enable debug for more detailed logs
       run: |
-          ssh -i ~/.ssh/new-kp.pem ubuntu@${{ secrets.EC2_HOST }}
+          ssh -i ~/.ssh/new-my-kp.pem ubuntu@${{ secrets.EC2_HOST }}
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/result:${{ github.sha }}
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vote:${{ github.sha }}
