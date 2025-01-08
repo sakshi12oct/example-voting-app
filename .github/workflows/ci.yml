@@ -45,6 +45,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
       
+    # step2.1: Add the steps to connect to the EC2 instance (with docker installed)
     - name: Set up AWS CLI
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -58,15 +59,11 @@ jobs:
         echo "${{ secrets.EC2_KEY }}" > ~/.ssh/new-my-kp.pem
         chmod 600 ~/.ssh/new-my-kp.pem  # Set appropriate permissions for the private key
         # ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-        
+
+
+    # Add the steps to pull images    
     - name: Deploy to EC2
-      #uses: appleboy/ssh-action@v0.1.3
-      #with:
-        #host: ${{ secrets.EC2_HOST }}
-        #username: ubuntu
-        #key:  ${{ secrets.EC2_KEY }}
-        #port: 22
-        #debug: true # Enable debug for more detailed logs
+      
       run: |
           ssh -i ~/.ssh/new-my-kp.pem ubuntu@${{ secrets.EC2_HOST }}
           sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
